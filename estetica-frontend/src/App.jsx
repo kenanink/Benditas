@@ -1,19 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Login from "./pages/Login";
-import AdminDashboard from "./pages/AdminDashboard";
-import ClientDashboard from "./pages/ClientDashboard";
-import ProductsPage from "./pages/ProductsPage";
-import ServicesPage from "./pages/ServicesPage";
-import AppointmentsAdmin from "./pages/AppointmentsAdmin";
-import MyAppointments from "./pages/MyAppointments";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AdminRoute from "./components/AdminRoute";
+import Navbar from "./components/navbar.jsx";
+import Login from "./pages/login.jsx";
+import AdminDashboard from "./pages/adminDashboard.jsx";
+import ClientDashboard from "./pages/clientDashboard.jsx";
+import ProductsPage from "./pages/productsPage.jsx";
+import ServicesPage from "./pages/servicesPage.jsx";
+import AppointmentsAdmin from "./pages/appointmentsAdmin.jsx";
+import MyAppointments from "./pages/myAppointments.jsx";
+import ProtectedRoute from "./components/protectedRoute.jsx";
+import AdminRoute from "./components/adminRoute.jsx";
 
 export default function App() {
   return (
