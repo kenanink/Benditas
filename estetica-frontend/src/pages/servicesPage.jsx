@@ -1,55 +1,100 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/api";
+import { useAuth } from "../context/authcontext";
+import VideoBackground from "../components/VideoBackground";
+import ServiceCard from "../components/ServiceCard";
+import AdminForm from "../components/AdminForm";
 
 export default function ServicesPage() {
   const [services, setServices] = useState([]);
-  const [form, setForm] = useState({ name: "", description: "", price: "", duration_minutes: 60 });
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const load = async () => {
-    const res = await api.get("/services");
-    setServices(res.data);
+    try {
+      const res = await api.get("/services");
+      setServices(res.data);
+    } catch (error) {
+      console.error("Error loading services:", error);
+    }
   };
 
-  useEffect(()=>{ load(); }, []);
+  useEffect(() => { 
+    load(); 
+  }, []);
 
-  const create = async (e) => {
-    e.preventDefault();
-    await api.post("/services", { ...form, price: parseFloat(form.price) });
-    setForm({ name: "", description: "", price: "", duration_minutes: 60 });
-    load();
+  const create = async (formData) => {
+    try {
+      await api.post("/services", { 
+        ...formData, 
+        price: parseFloat(formData.price) 
+      });
+      load();
+    } catch (error) {
+      console.error("Error creating service:", error);
+    }
   };
 
   const remove = async (id) => {
-    await api.delete(`/services/${id}`);
-    load();
+    try {
+      await api.delete(`/services/${id}`);
+      load();
+    } catch (error) {
+      console.error("Error deleting service:", error);
+    }
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl mb-4">Servicios</h2>
-
-      <form onSubmit={create} className="mb-6 space-y-2">
-        <input placeholder="Nombre" value={form.name} onChange={e=>setForm({...form, name:e.target.value})} className="border p-2 w-full"/>
-        <input placeholder="Descripción" value={form.description} onChange={e=>setForm({...form, description:e.target.value})} className="border p-2 w-full"/>
-        <input placeholder="Precio" value={form.price} onChange={e=>setForm({...form, price:e.target.value})} className="border p-2 w-full"/>
-        <input placeholder="Duración (min)" value={form.duration_minutes} onChange={e=>setForm({...form, duration_minutes:e.target.value})} className="border p-2 w-full"/>
-        <button className="bg-green-600 text-white px-4 py-2 rounded">Crear</button>
-      </form>
-
-      <div className="grid gap-4">
-        {services.map(s=>(
-          <div key={s.id} className="p-4 bg-white rounded shadow flex justify-between">
-            <div>
-              <div className="font-bold">{s.name}</div>
-              <div className="text-sm">{s.description}</div>
-            </div>
-            <div className="flex flex-col items-end">
-              <div className="font-semibold">₡ {s.price}</div>
-              <button onClick={()=>remove(s.id)} className="text-red-600 text-sm mt-2">Eliminar</button>
-            </div>
+    <VideoBackground>
+      <div className="min-h-screen py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-bold text-white mb-4">
+              Nuestros Servicios
+            </h1>
+            <p className="text-xl text-pink-100 max-w-2xl mx-auto">
+              Tratamientos profesionales realizados por expertas en belleza y cuidado de pestañas
+            </p>
           </div>
-        ))}
+
+          {/* Admin Form */}
+          {isAdmin && (
+            <div className="max-w-2xl mx-auto mb-12">
+              <AdminForm type="service" onSubmit={create} />
+            </div>
+          )}
+
+          {/* Services Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map(service => (
+              <ServiceCard
+                key={service.id}
+                service={service}
+                onDelete={remove}
+                isAdmin={isAdmin}
+              />
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {services.length === 0 && (
+            <div className="text-center py-16">
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-12 max-w-md mx-auto">
+                <svg className="w-16 h-16 text-rose-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h6m-6 0v6a2 2 0 002 2h4a2 2 0 002-2V7" />
+                </svg>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  No hay servicios disponibles
+                </h3>
+                <p className="text-gray-600">
+                  {isAdmin ? "Agrega el primer servicio usando el formulario de arriba." : "Pronto tendremos servicios disponibles."}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </VideoBackground>
   );
 }

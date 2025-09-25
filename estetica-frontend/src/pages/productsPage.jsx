@@ -1,54 +1,100 @@
 import React, { useState, useEffect } from "react";
 import api from "../api/api";
+import { useAuth } from "../context/authcontext";
+import VideoBackground from "../components/VideoBackground";
+import ProductCard from "../components/ProductCard";
+import AdminForm from "../components/AdminForm";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
-  const [form, setForm] = useState({ name: "", description: "", price: "" });
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const load = async () => {
-    const res = await api.get("/products");
-    setProducts(res.data);
+    try {
+      const res = await api.get("/products");
+      setProducts(res.data);
+    } catch (error) {
+      console.error("Error loading products:", error);
+    }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { 
+    load(); 
+  }, []);
 
-  const create = async (e) => {
-    e.preventDefault();
-    await api.post("/products", { ...form, price: parseFloat(form.price) });
-    setForm({ name: "", description: "", price: "" });
-    load();
+  const create = async (formData) => {
+    try {
+      await api.post("/products", { 
+        ...formData, 
+        price: parseFloat(formData.price) 
+      });
+      load();
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
   };
 
   const remove = async (id) => {
-    await api.delete(`/products/${id}`);
-    load();
+    try {
+      await api.delete(`/products/${id}`);
+      load();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl mb-4">Productos</h2>
-
-      <form onSubmit={create} className="mb-6 space-y-2">
-        <input placeholder="Nombre" value={form.name} onChange={e=>setForm({...form, name:e.target.value})} className="border p-2 w-full"/>
-        <input placeholder="Descripción" value={form.description} onChange={e=>setForm({...form, description:e.target.value})} className="border p-2 w-full"/>
-        <input placeholder="Precio" value={form.price} onChange={e=>setForm({...form, price:e.target.value})} className="border p-2 w-full"/>
-        <button className="bg-green-600 text-white px-4 py-2 rounded">Crear</button>
-      </form>
-
-      <div className="grid gap-4">
-        {products.map(p=>(
-          <div key={p.id} className="p-4 bg-white rounded shadow flex justify-between">
-            <div>
-              <div className="font-bold">{p.name}</div>
-              <div className="text-sm">{p.description}</div>
-            </div>
-            <div className="flex flex-col items-end">
-              <div className="font-semibold">₡ {p.price}</div>
-              <button onClick={()=>remove(p.id)} className="text-red-600 text-sm mt-2">Eliminar</button>
-            </div>
+    <VideoBackground>
+      <div className="min-h-screen py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-bold text-white mb-4">
+              Nuestros Productos
+            </h1>
+            <p className="text-xl text-pink-100 max-w-2xl mx-auto">
+              Descubre nuestra colección premium de productos para el cuidado y embellecimiento de pestañas
+            </p>
           </div>
-        ))}
+
+          {/* Admin Form */}
+          {isAdmin && (
+            <div className="max-w-2xl mx-auto mb-12">
+              <AdminForm type="product" onSubmit={create} />
+            </div>
+          )}
+
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map(product => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onDelete={remove}
+                isAdmin={isAdmin}
+              />
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {products.length === 0 && (
+            <div className="text-center py-16">
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-12 max-w-md mx-auto">
+                <svg className="w-16 h-16 text-pink-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  No hay productos disponibles
+                </h3>
+                <p className="text-gray-600">
+                  {isAdmin ? "Agrega el primer producto usando el formulario de arriba." : "Pronto tendremos productos disponibles."}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </VideoBackground>
   );
 }

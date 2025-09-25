@@ -1,40 +1,57 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/authcontext";
+import { useState } from "react";
+import Logo from "./Logo";
+import NavigationLinks from "./NavigationLinks";
+import ActionButtons from "./ActionButtons";
+import MobileMenu from "./MobileMenu";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const doLogout = () => {
-    logout();
-    navigate("/login");
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
-    <nav className="bg-white shadow-sm p-4 flex justify-between items-center">
-      <div className="flex items-center gap-4">
-        <Link to="/" className="font-bold text-xl"><img src="../public/Logo.jpeg" className="size-20"/></Link>
-        <Link to="/products" className="text-sm">Productos</Link>
-        <Link to="/services" className="text-sm">Servicios</Link>
-        {user && user.role === "admin" && (
-          <Link to="/admin" className="text-sm">Admin</Link>
-        )}
-        {user && user.role !== "admin" && (
-          <Link to="/my-appointments" className="text-sm">Mis Citas</Link>
-        )}
-      </div>
+    <>
+      <nav className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <Logo />
+            </div>
 
-      <div className="flex items-center gap-4">
-        {!user ? (
-          <Link to="/login" className="px-3 py-1 bg-indigo-600 text-white rounded">Login</Link>
-        ) : (
-          <div className="flex items-center gap-3">
-            <span className="text-sm">Hola, {user.email}</span>
-            <button onClick={doLogout} className="px-3 py-1 bg-red-500 text-white rounded">Salir</button>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <NavigationLinks />
+            </div>
+
+            {/* Desktop Action Buttons */}
+            <div className="hidden md:flex">
+              <ActionButtons />
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={toggleMobileMenu}
+                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Abrir menú"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
           </div>
-        )}
-        <Link to="/signin" className="px-3 py-1 bg-indigo-600 text-white rounded">Sign in</Link>
-      </div>
-    </nav>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      <MobileMenu 
+        isOpen={isMobileMenuOpen} 
+        onClose={() => setIsMobileMenuOpen(false)} 
+      />
+    </>
   );
 }
