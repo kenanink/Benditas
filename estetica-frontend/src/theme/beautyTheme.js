@@ -1,4 +1,4 @@
-// Theme configuration for feminine and elegant design
+// Updated theme with registration form styles
 export const theme = {
   colors: {
     primary: {
@@ -24,6 +24,30 @@ export const theme = {
       700: '#be123c',
       800: '#9f1239',
       900: '#881337'
+    },
+    success: {
+      50: '#f0fdf4',
+      100: '#dcfce7',
+      200: '#bbf7d0',
+      300: '#86efac',
+      400: '#4ade80',
+      500: '#22c55e',
+      600: '#16a34a',
+      700: '#15803d',
+      800: '#166534',
+      900: '#14532d'
+    },
+    error: {
+      50: '#fef2f2',
+      100: '#fee2e2',
+      200: '#fecaca',
+      300: '#fca5a5',
+      400: '#f87171',
+      500: '#ef4444',
+      600: '#dc2626',
+      700: '#b91c1c',
+      800: '#991b1b',
+      900: '#7f1d1d'
     },
     gold: {
       50: '#fffbeb',
@@ -66,5 +90,17 @@ export const theme = {
     lg: '12px',
     xl: '16px',
     '2xl': '24px'
+  },
+  forms: {
+    input: {
+      base: 'w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none',
+      default: 'border-pink-200 focus:border-pink-500 bg-white/80',
+      error: 'border-red-300 focus:border-red-500 bg-red-50',
+      success: 'border-green-300 focus:border-green-500 bg-green-50'
+    },
+    button: {
+      primary: 'w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl',
+      secondary: 'w-full bg-white border-2 border-pink-300 text-pink-600 hover:bg-pink-50 font-semibold py-4 px-6 rounded-xl transition-all duration-200'
+    }
   }
 };

@@ -146,3 +146,35 @@ button:focus-visible {
   outline: 2px solid #f97316;
   outline-offset: 2px;
 }
+
+/* Estilos para el Video de Fondo */
+.video-background {
+  position: fixed; /* Lo fija a la ventana del navegador */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Lo envía detrás de todo el contenido */
+  overflow: hidden; /* Oculta cualquier parte del video que se extienda más allá */
+}
+
+#myVideo {
+  /* Propiedades para asegurar que el video cubra completamente el contenedor */
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centra el video */
+  object-fit: cover; /* Asegura que el video cubra, recortando si es necesario */
+}
+
+/* Estilos para el Contenido (tu app) */
+.content-above-video {
+  /* Asegura que el contenido se muestre por encima del video (z-index por defecto > -1) */
+  position: relative;
+  z-index: 1; 
+  /* Puedes agregar padding o estilos de diseño aquí */
+}

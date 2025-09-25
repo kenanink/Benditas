@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Login from "./pages/login.jsx";
+import RegisterPage from "./pages/registerPage.jsx";
 import AdminDashboard from "./pages/adminDashboard.jsx";
 import ClientDashboard from "./pages/clientDashboard.jsx";
 import ProductsPage from "./pages/productsPage.jsx";
@@ -12,7 +13,6 @@ import AppointmentsAdmin from "./pages/appointmentsAdmin.jsx";
 import MyAppointments from "./pages/myAppointments.jsx";
 import ProtectedRoute from "./components/protectedRoute.jsx";
 import AdminRoute from "./components/adminRoute.jsx";
-import VideoBackground from './components/VideoBackground.jsx';
 
 export default function App() {
   return (
@@ -23,6 +23,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/products" />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/signin" element={<RegisterPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/services" element={<ServicesPage />} />
 
